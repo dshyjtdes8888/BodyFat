@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bodyfat.Mapper.BodyFatMapper">
+
+    <resultMap id="BodyMap" type="com.example.bodyfat.Entity.BodyFat">
+        <result property="ID" column="ID"/>
+        <result property="Density" column="Density"/>
+        <result property="PctBF" column="PctBF"/>
+        <result property="Age" column="Age"/>
+        <result property="Weight" column="Weight"/>
+        <result property="Height" column="Height"/>
+        <result property="Neck" column="Neck"/>
+        <result property="Chest" column="Chest"/>
+        <result property="Abdomen" column="Abdomen"/>
+        <result property="Waist" column="Waist"/>
+        <result property="Hip" column="Hip"/>
+        <result property="Thigh" column="Thigh"/>
+        <result property="Knee" column="Knee"/>
+        <result property="Ankle" column="Ankle"/>
+        <result property="Bicep" column="Bicep"/>
+        <result property="Forearm" column="Forearm"/>
+        <result property="Wrist" column="Wrist"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="BodyMap">
+        SELECT * FROM bodyfat;
+    </select>
+</mapper>

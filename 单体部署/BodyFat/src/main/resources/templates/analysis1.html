@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Analysis1</title>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+
+<h1>人体脂肪分析——单项数据分析</h1>
+<label for="dataSelect">选择要分析的字段：</label>
+<select id="dataSelect">
+    <option value="age">年龄</option>
+    <option value="density">密度</option>
+    <option value="pctBF">体脂比</option>
+    <option value="weight">体重</option>
+    <option value="height">身高</option>
+    <option value="neck">颈部体脂比</option>
+    <option value="chest">胸部体脂比</option>
+    <option value="abdomen">腹部体脂比</option>
+    <option value="waist">腰部体脂比</option>
+    <option value="hip">臀部体脂比</option>
+    <option value="thigh">大腿体脂比</option>
+    <option value="knee">膝盖体脂比</option>
+    <option value="ankle">脚踝体脂比</option>
+    <option value="bicep">肱二头肌体脂比</option>
+    <option value="forearm">前臂体脂比</option>
+    <option value="wrist">手腕体脂比</option>
+</select>
+<div style="margin-top: 30px;"></div>
+<div>
+    <button id="btnCalculateMean">计算平均数</button>
+    <button id="btnCalculateMode">计算众数</button>
+    <button id="btnCalculateMedian">计算中位数</button>
+    <button id="btnCalculateStdDev">计算标准差</button>
+</div>
+<div style="margin-top: 30px;"></div>
+<div>
+    <button id="btnCalculateQ1">计算Q1</button>
+    <button id="btnCalculateQ3">计算Q3</button>
+    <button id="btnCalculateIQR">计算IQR</button>
+    <button id="btnCalculatePercentile">计算百分位数</button>
+</div>
+
+<div style="margin-top: 30px;"></div>
+
+<div id="result"></div>
+
+<script>
+    var dataSelect = document.getElementById("dataSelect");
+    var btnCalculateMean = document.getElementById("btnCalculateMean");
+    var btnCalculateMode = document.getElementById("btnCalculateMode");
+    var btnCalculateMedian = document.getElementById("btnCalculateMedian");
+    var btnCalculateStdDev = document.getElementById("btnCalculateStdDev");
+
+    var btnCalculateQ1 = document.getElementById("btnCalculateQ1");
+    var btnCalculateQ3 = document.getElementById("btnCalculateQ3");
+    var btnCalculateIQR = document.getElementById("btnCalculateIQR");
+    var btnCalculatePercentile = document.getElementById("btnCalculatePercentile");
+    var resultDiv = document.getElementById("result");
+
+    btnCalculateMean.onclick = function () {
+        calculateAndDisplayResult('mean');
+    };
+
+    btnCalculateMode.onclick = function () {
+        calculateAndDisplayResult('mode');
+    };
+
+    btnCalculateMedian.onclick = function () {
+        calculateAndDisplayResult('median');
+    };
+
+    btnCalculateStdDev.onclick = function () {
+        calculateAndDisplayResult('stdDev');
+    };
+
+    btnCalculateQ1.onclick = function () {
+        calculateAndDisplayResult('q1');
+    };
+
+    btnCalculateQ3.onclick = function () {
+        calculateAndDisplayResult('q3');
+    };
+
+    btnCalculateIQR.onclick = function () {
+        calculateAndDisplayResult('iqr');
+    };
+
+    btnCalculatePercentile.onclick = function () {
+        var percentile = prompt("请输入要计算的百分位数（0到100之间）:");
+        if (percentile !== null && percentile !== "") {
+            calculateAndDisplayResult('percentile', { percentile: parseFloat(percentile) });
+        }
+    };
+
+    function calculateAndDisplayResult(calculationType, additionalParams = {}) {
+        var selectedData = dataSelect.value;
+
+        $.get('/calculate', { dataName: selectedData, calculationType: calculationType, ...additionalParams }, function (result) {
+            resultDiv.innerHTML = `计算结果 (${calculationType}): ${result}`;
+        });
+    }
+</script>
+
+</body>
+</html>

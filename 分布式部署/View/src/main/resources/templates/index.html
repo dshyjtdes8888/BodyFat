@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>人体脂肪分析</title>
+  <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+  <style>
+    .box {
+      width: 1000px;
+      height: 800px;
+      border: 1px solid cornflowerblue;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select {
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>人体脂肪分析</h1>
+<h2>数据来源：<a href="https://dasl.datadescription.com/datafile/bodyfat/?_sf_s=body&_sfm_cases=4+59943">https://dasl.datadescription.com/datafile/bodyfat/?_sf_s=body&_sfm_cases=4+59943</a></h2>
+<label for="xSelect">选择X数据：</label>
+<select id="xSelect">
+  <!-- 添加X数据的选项，可以根据实际需要修改 -->
+  <option value="age">年龄</option>
+  <option value="density">密度</option>
+  <option value="pctBF">体脂比</option>
+  <option value="weight">体重</option>
+  <option value="height">身高</option>
+  <!-- 其他 X 数据的选项 -->
+</select>
+
+<label for="ySelect">选择Y数据：</label>
+<select id="ySelect">
+  <!-- 添加Y数据的选项，可以根据实际需要修改 -->
+  <option value="density">密度</option>
+  <option value="pctBF">体脂比</option>
+  <option value="weight">体重</option>
+  <option value="height">身高</option>
+  <option value="neck">颈部体脂比</option>
+  <option value="chest">胸部体脂比</option>
+  <option value="abdomen">腹部体脂比</option>
+  <option value="waist">腰部体脂比</option>
+  <option value="hip">臀部体脂比</option>
+  <option value="thigh">大腿体脂比</option>
+  <option value="knee">膝盖体脂比</option>
+  <option value="ankle">脚踝体脂比</option>
+  <option value="bicep">肱二头肌体脂比</option>
+  <option value="forearm">前臂体脂比</option>
+  <option value="wrist">手腕体脂比</option>
+  <!-- 其他 Y 数据的选项 -->
+</select>
+
+<input type="button" value="显示散点图" class="btnShowScatter"/>
+<input type="button" value="显示折线图" class="btnShowLine"/>
+<input type="button" value="显示柱状图" class="btnShowBar"/>
+<button id="btnDataAnalysis1">单项数据分析</button>
+<button id="btnDataAnalysis2">线性回归分析</button>
+<hr/>
+<div class="box"></div>
+
+<script>
+  var box = document.getElementsByClassName("box")[0];
+  var btnShowScatter = document.getElementsByClassName("btnShowScatter")[0];
+  var btnShowLine = document.getElementsByClassName("btnShowLine")[0];
+  var btnShowBar = document.getElementsByClassName("btnShowBar")[0];
+  var xSelect = document.getElementById("xSelect");
+  var ySelect = document.getElementById("ySelect");
+
+  var btnDataAnalysis1 = document.getElementById("btnDataAnalysis1");
+  var btnDataAnalysis2 = document.getElementById("btnDataAnalysis2");
+
+  btnShowScatter.onclick = function () {
+    showChart('scatter');
+  };
+
+  btnShowLine.onclick = function () {
+    showChart('line');
+  };
+
+  btnShowBar.onclick = function () {
+    showChart('bar');
+  };
+
+  btnDataAnalysis1.onclick = function () {
+    window.location.href = '/analysis1';
+  };
+
+  btnDataAnalysis2.onclick = function () {
+    window.location.href = '/analysis2';
+  };
+
+  function showChart(chartType) {
+    $.get('http://localhost:8383/getAll', function(data) {
+      var xField = xSelect.value;
+      var yField = ySelect.value;
+      var dataObjects = [];
+
+      for (var i = 0; i < data.length; i++) {
+        dataObjects.push({ x: data[i][xField], y: data[i][yField] });
+      }
+
+      dataObjects.sort(function (a, b) {
+        return a.x - b.x;
+      });
+
+      var my_box = echarts.init(box);
+      var option = {
+        title: {
+          text: "人体脂肪分析图",
+          x: "center",
+          y: "top",
+          textAlign: "left",
+          textStyle: {
+            fontFamily: "楷体",
+            fontSize: 35,
+            textStyle: "bold"
+          }
+        },
+        legend: {
+          left: "left",
+          orient: "vertical"
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          },
+          formatter: function (params) {
+            var dataIndex = params[0].dataIndex;
+            var m = dataObjects[dataIndex].x;
+            var n = dataObjects[dataIndex].y;
+            return xField+": " + m + '<br/>'+ yField+": " + n;
+          }
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+            dataZoom: {
+              yAxisIndex: false,
+              start: 0,
+              end: 100
+            }
+          },
+          emphasis: {
+            iconStyle: {
+              color: '#2a99c9'
+            }
+          }
+        },
+        xAxis: {
+          type: 'value',
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: yField,
+            type: chartType,
+            data: dataObjects.map(function (item) {
+              return [item.x, item.y];
+            }),
+            itemStyle: {
+              normal: {
+                color: '#0934a4'
+              }
+            }
+          }
+        ]
+      };
+
+      my_box.setOption(option);
+    });
+  }
+</script>
+</body>
+</html>

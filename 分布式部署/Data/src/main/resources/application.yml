@@ -1,0 +1,25 @@
+spring:
+  rabbitmq:
+    host: 114.132.150.220
+    port: 5672
+    username: Li_yuan
+    password: 123456
+    virtual-host: /ly
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/bodyfat?serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.bodyfat.Model
+
+server:
+  port: 8484

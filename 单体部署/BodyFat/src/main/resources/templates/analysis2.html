@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Analysis2</title>
+    <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+        .box {
+            width: 1000px;
+            height: 800px;
+            border: 1px solid cornflowerblue;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>人体脂肪分析——线性回归分析</h1>
+<label for="xSelect">选择X数据：</label>
+<select id="xSelect">
+    <!-- 添加X数据的选项，可以根据实际需要修改 -->
+    <option value="age">年龄</option>
+    <option value="density">密度</option>
+    <option value="pctBF">体脂比</option>
+    <option value="weight">体重</option>
+    <option value="height">身高</option>
+    <!-- 其他 X 数据的选项 -->
+</select>
+
+<label for="ySelect">选择Y数据：</label>
+<select id="ySelect">
+    <option value="density">密度</option>
+    <option value="pctBF">体脂比</option>
+    <option value="weight">体重</option>
+    <option value="height">身高</option>
+    <option value="neck">颈部体脂比</option>
+    <option value="chest">胸部体脂比</option>
+    <option value="abdomen">腹部体脂比</option>
+    <option value="waist">腰部体脂比</option>
+    <option value="hip">臀部体脂比</option>
+    <option value="thigh">大腿体脂比</option>
+    <option value="knee">膝盖体脂比</option>
+    <option value="ankle">脚踝体脂比</option>
+    <option value="bicep">肱二头肌体脂比</option>
+    <option value="forearm">前臂体脂比</option>
+    <option value="wrist">手腕体脂比</option>
+</select>
+
+<button id="btnLinearRegression">线性回归</button>
+<div id="result"></div>
+
+<script>
+    var btnLinearRegression = document.getElementById("btnLinearRegression");
+    var resultDiv = document.getElementById("result");
+
+    btnLinearRegression.onclick = function () {
+        linearRegression();
+    };
+
+    function linearRegression() {
+        var xField = xSelect.value;
+        var yField = ySelect.value;
+
+        $.get('/linearRegression', { xField: xField, yField: yField }, function (result) {
+            resultDiv.innerHTML = `线性回归结果：<br>相关系数：${result.correlation}<br>最佳拟合直线方程：y = ${result.slope}x + ${result.intercept}`;
+        });
+
+    }
+</script>
+
+</body>
+</html>
